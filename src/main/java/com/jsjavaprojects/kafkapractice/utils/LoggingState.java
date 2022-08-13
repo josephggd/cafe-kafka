@@ -1,4 +1,4 @@
-package utils;
+package com.jsjavaprojects.kafkapractice.utils;
 
 public enum LoggingState {
     ATTEMPT,

@@ -5,21 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
-import static utils.CommonStrings.customerTopic;
-import static utils.CommonStrings.orderTopic;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_TOPIC;
 
 @Configuration
-public class TopicConfiguration {
-
-    @Bean
-    public NewTopic buildCustomerTopic() {
-        return TopicBuilder.name(customerTopic)
-                .build();
-
-    }
+public class Topic {
     @Bean
     public NewTopic buildOrderTopic() {
-        return TopicBuilder.name(orderTopic)
+        return TopicBuilder.name(ORDER_TOPIC)
                 .build();
     }
 }

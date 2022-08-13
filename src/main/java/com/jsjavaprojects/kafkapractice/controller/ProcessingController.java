@@ -1,6 +1,7 @@
 package com.jsjavaprojects.kafkapractice.controller;
 
-import com.jsjavaprojects.kafkapractice.service.OrderService;
+import com.jsjavaprojects.kafkapractice.service.ProcessingService;
+import com.jsjavaprojects.kafkapractice.utils.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -8,37 +9,36 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import utils.MenuItem;
 
 import java.util.UUID;
 
-import static utils.CommonStrings.*;
-import static utils.LoggingState.ATTEMPT;
-import static utils.LoggingState.FAILURE;
-import static utils.OrderState.DELIVERED;
-import static utils.OrderState.PAID;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
+import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
+import static com.jsjavaprojects.kafkapractice.utils.LoggingState.FAILURE;
+import static com.jsjavaprojects.kafkapractice.utils.OrderState.DELIVERED;
+import static com.jsjavaprojects.kafkapractice.utils.OrderState.PAID;
 
 @RestController
-@RequestMapping("${api.prefix}orders/")
-public class OrderProcessingController {
+@RequestMapping("${api.prefix}/orders/current/")
+public class ProcessingController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final OrderService orderService;
+    private final ProcessingService processingService;
 
-    public OrderProcessingController(
-            OrderService orderService
+    public ProcessingController(
+            ProcessingService processingService
     ){
-        this.orderService = orderService;
+        this.processingService = processingService;
     }
 
-    @PutMapping("/pay/{id}")
+    @PutMapping("pay")
     public ResponseEntity<String> pay(
-            @CookieValue(orderIdKey) UUID orderId,
-            @CookieValue(menuItemKey) MenuItem menuItem
+            @CookieValue(ORDER_ID_KEY) UUID orderId,
+            @CookieValue(MENU_ITEM_KEY) MenuItem menuItem
     ){
         logger.info(LOG, ATTEMPT, PAID);
         try {
-            orderService.payForOrder(orderId, menuItem);
+            processingService.payForOrder(orderId, menuItem);
             return ResponseEntity.ok(PAID.toString());
         } catch (Exception e) {
             logger.warn(LOG, FAILURE, e.getMessage());
@@ -46,14 +46,14 @@ public class OrderProcessingController {
         }
     }
 
-    @PutMapping("/deliver/{id}")
+    @PutMapping("deliver")
     public ResponseEntity<String> deliver(
-            @CookieValue(orderIdKey) UUID orderId,
-            @CookieValue(menuItemKey) MenuItem menuItem
+            @CookieValue(ORDER_ID_KEY) UUID orderId,
+            @CookieValue(MENU_ITEM_KEY) MenuItem menuItem
     ){
         logger.info(LOG, ATTEMPT, DELIVERED);
         try {
-            orderService.deliverOrder(orderId, menuItem);
+            processingService.deliverOrder(orderId, menuItem);
             return ResponseEntity.ok(DELIVERED.toString());
         } catch (Exception e) {
             logger.warn(LOG, FAILURE, e.getMessage());

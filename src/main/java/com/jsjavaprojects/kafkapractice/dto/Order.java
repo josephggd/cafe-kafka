@@ -1,23 +1,19 @@
 package com.jsjavaprojects.kafkapractice.dto;
 
-import lombok.*;
-import org.springframework.lang.Nullable;
-import utils.MenuItem;
-import utils.OrderState;
+import com.jsjavaprojects.kafkapractice.utils.MenuItem;
+import com.jsjavaprojects.kafkapractice.utils.OrderState;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.UUID;
 
 @Data
-@RequiredArgsConstructor
 @Builder
-public class OrderDto {
+public class Order {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    @Nullable
-    @Setter(AccessLevel.NONE)
-    private UUID number;
+    private UUID orderId;
     private MenuItem menuItem;
     private OrderState currentState;
-    @Nullable
     private String lastUpdated;
 }

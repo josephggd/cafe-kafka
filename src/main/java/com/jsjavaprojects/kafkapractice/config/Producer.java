@@ -1,6 +1,6 @@
 package com.jsjavaprojects.kafkapractice.config;
 
-import com.jsjavaprojects.kafkapractice.dto.OrderDto;
+import com.jsjavaprojects.kafkapractice.dto.Order;
 import com.jsjavaprojects.kafkapractice.serialization.OrderSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class ProducerConfiguration {
+public class Producer {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String servers;
@@ -27,13 +27,13 @@ public class ProducerConfiguration {
         return props;
     }
     @Bean
-    public ProducerFactory<String, OrderDto> orderProducerFactory(){
+    public ProducerFactory<String, Order> orderProducerFactory(){
         return new DefaultKafkaProducerFactory<>(orderConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, OrderDto> orderTemplate(
-            ProducerFactory<String, OrderDto> factory
+    public KafkaTemplate<String, Order> orderTemplate(
+            ProducerFactory<String, Order> factory
     ){
         return new KafkaTemplate<>(factory);
     }
