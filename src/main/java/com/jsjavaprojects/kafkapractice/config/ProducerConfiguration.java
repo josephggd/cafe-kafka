@@ -1,7 +1,8 @@
 package com.jsjavaprojects.kafkapractice.config;
 
+import com.jsjavaprojects.kafkapractice.dto.OrderDto;
+import com.jsjavaprojects.kafkapractice.serialization.OrderSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,21 +19,21 @@ public class ProducerConfiguration {
     @Value("${spring.kafka.bootstrap-servers}")
     private String servers;
 
-    public Map<String, Object> producerConfig(){
+    public Map<String, Object> orderConfig(){
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, OrderSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, OrderSerializer.class);
         return props;
     }
     @Bean
-    public ProducerFactory<String, String> factory(){
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+    public ProducerFactory<String, OrderDto> orderProducerFactory(){
+        return new DefaultKafkaProducerFactory<>(orderConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, String> template(
-            ProducerFactory<String, String> factory
+    public KafkaTemplate<String, OrderDto> orderTemplate(
+            ProducerFactory<String, OrderDto> factory
     ){
         return new KafkaTemplate<>(factory);
     }
