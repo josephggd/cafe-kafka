@@ -55,9 +55,12 @@ public class ProcessingController {
         try {
             processingService.deliverOrder(orderId, menuItem);
             return ResponseEntity.ok(DELIVERED.toString());
+        } catch (InterruptedException e) {
+            logger.warn(LOG, FAILURE, e.getMessage());
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.warn(LOG, FAILURE, e.getMessage());
-            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
     }
 }

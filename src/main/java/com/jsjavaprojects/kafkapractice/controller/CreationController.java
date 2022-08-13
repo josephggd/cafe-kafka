@@ -56,19 +56,22 @@ public class CreationController {
             Cookie orderIdCookie = generateOrderCookie(
                     ORDER_ID_KEY,
                     idNumber.toString(),
-                    payPath
+                    PAY_PATH
                     );
             Cookie menuItemCookie = generateOrderCookie(
                     MENU_ITEM_KEY,
                     menuItem.toString(),
-                    payPath
+                    PAY_PATH
             );
             response.addCookie(orderIdCookie);
             response.addCookie(menuItemCookie);
             return ResponseEntity.ok(status);
+        } catch (InterruptedException e) {
+            logger.warn(LOG, FAILURE, e.getMessage());
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             logger.warn(LOG, FAILURE, e.getMessage());
-            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
     }
 }
