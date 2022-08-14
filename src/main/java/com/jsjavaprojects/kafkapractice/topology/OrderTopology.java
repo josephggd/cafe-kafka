@@ -26,7 +26,7 @@ public class OrderTopology {
                         Consumed.with(Serdes.String(), orderJsonSerde))
                 .groupByKey()
                 .aggregate(OrderHistory::new,
-                        (key, value, aggregate) -> aggregate.process(key, value),
+                        (key, value, aggregate) -> aggregate.process(value),
                         Materialized.<String, OrderHistory, KeyValueStore<Bytes, byte[]>>as(ORDER_HISTORY_STORE)
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(orderHistoryJsonSerde))

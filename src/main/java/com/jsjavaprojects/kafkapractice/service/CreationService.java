@@ -7,11 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.LOG;
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_TOPIC;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.PREPARED;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.RECEIVED;
@@ -35,11 +33,11 @@ public class CreationService {
         order.setOrderId(idNumber);
         order.setMenuItem(menuItem);
         order.setCurrentState(RECEIVED);
-        order.setLastUpdated(String.valueOf(LocalDate.now()));
+        order.setLastUpdated();
         template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
-        Thread.sleep(5000);
+        Thread.sleep(STD_WAIT_TIME);
         order.setCurrentState(PREPARED);
-        order.setLastUpdated(String.valueOf(LocalDate.now()));
+        order.setLastUpdated();
         template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
         return idNumber;
     }

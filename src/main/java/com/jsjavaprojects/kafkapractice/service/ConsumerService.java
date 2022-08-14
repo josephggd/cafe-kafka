@@ -29,10 +29,7 @@ public class ConsumerService {
 
     public OrderHistory findOrderHistory(UUID id){
         logger.info(LOG, ATTEMPT, "findOrderHistory");
-        OrderHistory orderHistory = getStore().get(id.toString());
-        System.out.println(orderHistory);
-        System.out.println("***");
-        return orderHistory;
+        return getStore().get(id.toString());
     }
     public ReadOnlyKeyValueStore<String, OrderHistory> getStore(){
         logger.info(LOG, ATTEMPT, "getStore");

@@ -10,8 +10,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class OrderHistory {
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-
     private UUID orderId;
     private MenuItem menuItem;
     private OrderState currentState;
@@ -20,11 +18,10 @@ public class OrderHistory {
     private String paidDate;
     private String deliveredDate;
 
-    public OrderHistory process( String uuid, Order order ){
-        System.out.println("uuid:"+uuid);
+    public OrderHistory process( Order order ){
         this.setOrderId(order.getOrderId());
         this.setMenuItem(order.getMenuItem());
-        System.out.println(order);
+        this.setCurrentState(order.getCurrentState());
         switch (order.getCurrentState()){
             case RECEIVED:
                 this.setReceivedDate(order.getLastUpdated());

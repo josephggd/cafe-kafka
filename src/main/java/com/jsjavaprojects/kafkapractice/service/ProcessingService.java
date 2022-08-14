@@ -7,11 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.LOG;
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_TOPIC;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.DELIVERED;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.PAID;
@@ -37,7 +35,7 @@ public class ProcessingService {
         order.setOrderId(orderId);
         order.setCurrentState(PAID);
         order.setMenuItem(menuItem);
-        order.setLastUpdated(String.valueOf(LocalDate.now()));
+        order.setLastUpdated();
         template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
     }
 
@@ -46,12 +44,12 @@ public class ProcessingService {
             MenuItem menuItem
     ) throws InterruptedException {
         logger.info(LOG, ATTEMPT, "deliverOrder");
-        Thread.sleep(5000);
+        Thread.sleep(STD_WAIT_TIME);
         Order order = new Order();
         order.setOrderId(orderId);
         order.setCurrentState(DELIVERED);
         order.setMenuItem(menuItem);
-        order.setLastUpdated(String.valueOf(LocalDate.now()));
+        order.setLastUpdated();
         template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
     }
 }
