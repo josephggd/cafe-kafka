@@ -2,21 +2,24 @@ package com.jsjavaprojects.kafkapractice.controller;
 
 import com.jsjavaprojects.kafkapractice.dto.OrderHistory;
 import com.jsjavaprojects.kafkapractice.service.ConsumerService;
-import com.jsjavaprojects.kafkapractice.utils.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.LOG;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_ID_KEY;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.FAILURE;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.DELIVERED;
 
 @RestController
-@RequestMapping("${api.prefix}")
+@RequestMapping("${api.prefix}/history/")
 public class ConsumerController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,10 +31,9 @@ public class ConsumerController {
         this.consumerService = consumerService;
     }
 
-    @GetMapping("/status")
+    @GetMapping("/byId")
     public ResponseEntity<OrderHistory> deliver(
-            @CookieValue(ORDER_ID_KEY) UUID orderId,
-            @CookieValue(MENU_ITEM_KEY) MenuItem menuItem
+            @CookieValue(ORDER_ID_KEY) UUID orderId
     ){
         logger.info(LOG, ATTEMPT, DELIVERED);
         try {

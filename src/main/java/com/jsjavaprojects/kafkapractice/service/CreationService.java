@@ -13,6 +13,7 @@ import java.util.UUID;
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.LOG;
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_TOPIC;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
+import static com.jsjavaprojects.kafkapractice.utils.OrderState.PREPARED;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.RECEIVED;
 
 @Service
@@ -30,17 +31,16 @@ public class CreationService {
     public UUID createNewOrder(MenuItem menuItem) throws InterruptedException {
         logger.info(LOG, ATTEMPT, "createNewOrder");
         UUID idNumber = UUID.randomUUID();
-        Order order = Order
-                .builder()
-                .orderId(idNumber)
-                .currentState(RECEIVED)
-                .menuItem(menuItem)
-                .lastUpdated(String.valueOf(LocalDate.now()))
-                .build();
-        template.send(ORDER_TOPIC, order);
-        Thread.sleep(5000);
+        Order order = new Order();
+        order.setOrderId(idNumber);
+        order.setMenuItem(menuItem);
+        order.setCurrentState(RECEIVED);
         order.setLastUpdated(String.valueOf(LocalDate.now()));
-        template.send(ORDER_TOPIC, order);
+        template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
+        Thread.sleep(5000);
+        order.setCurrentState(PREPARED);
+        order.setLastUpdated(String.valueOf(LocalDate.now()));
+        template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
         return idNumber;
     }
 }

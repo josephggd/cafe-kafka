@@ -13,8 +13,6 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
-import java.util.UUID;
-
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
 
 public class OrderTopology {
@@ -23,17 +21,17 @@ public class OrderTopology {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         JsonSerde<Order> orderJsonSerde = new JsonSerde<>(Order.class);
         JsonSerde<OrderHistory> orderHistoryJsonSerde = new JsonSerde<>(OrderHistory.class);
-        KStream<UUID, OrderHistory> stringOrderHistoryKStream = streamsBuilder.stream(
+        KStream<String, OrderHistory> stringOrderHistoryKStream = streamsBuilder.stream(
                         ORDER_TOPIC,
-                        Consumed.with(Serdes.UUID(), orderJsonSerde))
+                        Consumed.with(Serdes.String(), orderJsonSerde))
                 .groupByKey()
                 .aggregate(OrderHistory::new,
-                        (key, value, aggregate) -> aggregate.process(value),
-                        Materialized.<UUID, OrderHistory, KeyValueStore<Bytes, byte[]>>as(ORDER_HISTORY_STORE)
-                                .withKeySerde(Serdes.UUID())
+                        (key, value, aggregate) -> aggregate.process(key, value),
+                        Materialized.<String, OrderHistory, KeyValueStore<Bytes, byte[]>>as(ORDER_HISTORY_STORE)
+                                .withKeySerde(Serdes.String())
                                 .withValueSerde(orderHistoryJsonSerde))
                 .toStream();
-        stringOrderHistoryKStream.to(ORDER_HISTORY_TOPIC, Produced.with(Serdes.UUID(), orderHistoryJsonSerde));
+        stringOrderHistoryKStream.to(ORDER_HISTORY_TOPIC, Produced.with(Serdes.String(), orderHistoryJsonSerde));
         return streamsBuilder.build();
     }
 }

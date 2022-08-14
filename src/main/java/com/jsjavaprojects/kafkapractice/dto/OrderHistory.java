@@ -20,9 +20,11 @@ public class OrderHistory {
     private String paidDate;
     private String deliveredDate;
 
-    public OrderHistory process( Order order ){
+    public OrderHistory process( String uuid, Order order ){
+        System.out.println("uuid:"+uuid);
         this.setOrderId(order.getOrderId());
         this.setMenuItem(order.getMenuItem());
+        System.out.println(order);
         switch (order.getCurrentState()){
             case RECEIVED:
                 this.setReceivedDate(order.getLastUpdated());
