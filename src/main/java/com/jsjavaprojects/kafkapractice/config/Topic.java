@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_HISTORY_TOPIC;
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_TOPIC;
 
 @Configuration
@@ -12,6 +13,11 @@ public class Topic {
     @Bean
     public NewTopic buildOrderTopic() {
         return TopicBuilder.name(ORDER_TOPIC)
+                .build();
+    }
+    @Bean
+    public NewTopic buildOrderHistoryTopic() {
+        return TopicBuilder.name(ORDER_HISTORY_TOPIC)
                 .build();
     }
 }

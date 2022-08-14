@@ -4,6 +4,9 @@ public class CommonStrings {
     private CommonStrings(){}
     public static final String LOG = "|| STATE: {} | DESCR: {} ||";
     public static final String ORDER_TOPIC = "order";
+    public static final String ORDER_HISTORY_TOPIC = "orderHistory";
+
+    public static final String ORDER_HISTORY_STORE = "historyStore";
 
     public static final String COOKIE_PREFIX = "ck-";
 
