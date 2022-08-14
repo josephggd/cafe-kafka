@@ -16,6 +16,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
 
 public class OrderTopology {
+    private OrderTopology (){}
 
     public static Topology buildTopology() {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
