@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     protected static final String[] allowedVerbs = new String[] {
-            "GET", "PUT", "POST"
+            "GET", "PUT", "POST", "OPTIONS"
     };
 
     @Override

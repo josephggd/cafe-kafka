@@ -5,6 +5,9 @@ import com.jsjavaprojects.kafkapractice.service.ConsumerService;
 import com.jsjavaprojects.kafkapractice.service.CreationService;
 import com.jsjavaprojects.kafkapractice.service.ProcessingService;
 import com.jsjavaprojects.kafkapractice.utils.MenuItem;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import static com.jsjavaprojects.kafkapractice.utils.OrderState.*;
 
 @RestController
 @RequestMapping("${api.prefix}/orders/")
+@Tag(name = "Order API", description = "API for making and aggregating Orders")
 public class OrderController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -50,6 +54,9 @@ public class OrderController {
 
 
     @PostMapping("{menuItem}")
+//    @Operation(description = "Initiate 'food-ordering' process by 'calling in' an order", parameters = {
+//            @Parameter(name = "name", in = ParameterIn.QUERY, required = true, description = "name parameter")
+//    })
     public ResponseEntity<String> order(
             @PathVariable("menuItem") MenuItem menuItem,
             HttpServletResponse response
