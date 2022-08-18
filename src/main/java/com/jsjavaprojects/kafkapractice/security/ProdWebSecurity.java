@@ -19,10 +19,8 @@ public class ProdWebSecurity {
     public SecurityFilterChain filterChain( HttpSecurity httpSecurity ) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("/api/orders/**", "/swagger-ui/**").permitAll();
-        httpSecurity.formLogin().disable();
-        httpSecurity.httpBasic().disable();
-        httpSecurity
+                .antMatchers("/api/orders/**", "/swagger-ui/**").permitAll()
+                .and()
                 .cors() // todo: CORS Access-Control-Allow-Origin
                 .and()
                 .csrf()
