@@ -11,7 +11,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_HISTORY_STORE;

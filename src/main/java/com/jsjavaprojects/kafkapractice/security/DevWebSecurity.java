@@ -22,6 +22,7 @@ public class DevWebSecurity {
         httpSecurity.httpBasic().disable();
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();
+        httpSecurity.cors();
         return httpSecurity.build();
     }
 
