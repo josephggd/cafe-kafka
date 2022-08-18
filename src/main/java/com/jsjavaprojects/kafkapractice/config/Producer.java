@@ -30,12 +30,15 @@ public class Producer {
     @Value("${spring.kafka.properties.sasl.jaas.config}")
     private String jaasConfig;
 
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
+
     @Bean
     @ConditionalOnProperty(name = "cloudkarafka.enabled", havingValue = "true")
     public ProducerFactory<String, Order> cloudProducerFactory(){
         logger.info(LOG, ATTEMPT, "cloudProducerFactory");
         Map<String, Object> props = new HashMap<>();
-        props.put("group.id", "newer");
+        props.put("group.id", groupId);
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("auto.offset.reset", "earliest");
@@ -54,7 +57,7 @@ public class Producer {
     public ProducerFactory<String, Order> devProducerFactory(){
         logger.info(LOG, ATTEMPT, "devProducerFactory");
         Map<String, Object> props = new HashMap<>();
-        props.put("group.id", "newer");
+        props.put("group.id", groupId);
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("auto.offset.reset", "earliest");
@@ -64,10 +67,17 @@ public class Producer {
         return new DefaultKafkaProducerFactory<>(props);
     }
 
+//    @Bean
+//    public KafkaTemplate<String, Order> orderTemplate(
+//            ProducerFactory<String, Order> factory
+//    ){
+//        return new KafkaTemplate<>(factory);
+//    }
+
     @Bean
-    public KafkaTemplate<String, Order> orderTemplate(
-            ProducerFactory<String, Order> factory
-    ){
-        return new KafkaTemplate<>(factory);
+    public KafkaTemplate<String, Order> kafkaTemplate(ProducerFactory<String, Order> kafkaProducerFactory) {
+        KafkaTemplate<String, Order> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory);
+        kafkaProducerFactory.createProducer();
+        return kafkaTemplate;
     }
 }
