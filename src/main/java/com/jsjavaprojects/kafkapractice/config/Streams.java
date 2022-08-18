@@ -16,15 +16,12 @@ import java.util.Properties;
 
 @Configuration
 public class Streams {
-
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String servers;
-
     @Value("${kafka.streams.state.dir:/tmp/kafka-streams/orderHistory}")
     private String stateDir;
     @Value("${kafka.streams.host.info:localhost:8080}")
     private String hostInfo;
-
+    @Value("${spring.kafka.template.default-topic}")
+    private String defaultTopic;
     @Bean
     public Properties kafkaStreamsConfiguration(){
         Properties properties = new Properties();
@@ -41,7 +38,7 @@ public class Streams {
 
     @Bean
     public KafkaStreams kafkaStreams(@Qualifier("kafkaStreamsConfiguration") Properties streamConfiguration) {
-        Topology topology = OrderTopology.buildTopology();
+        Topology topology = OrderTopology.buildTopology(defaultTopic);
         KafkaStreams kafkaStreams = new KafkaStreams(topology, streamConfiguration);
         kafkaStreams.cleanUp();
         kafkaStreams.start();

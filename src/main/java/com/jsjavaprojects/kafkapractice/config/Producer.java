@@ -6,6 +6,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -26,17 +27,41 @@ public class Producer {
     @Value("${spring.kafka.bootstrap-servers}")
     private String servers;
 
-    public Map<String, Object> orderConfig(){
-        logger.info(LOG, ATTEMPT, "orderConfig");
+    @Value("${spring.kafka.properties.sasl.jaas.config}")
+    private String jaasConfig;
+
+    @Bean
+    @ConditionalOnProperty(name = "cloudkarafka.enabled", havingValue = "true")
+    public ProducerFactory<String, Order> cloudProducerFactory(){
+        logger.info(LOG, ATTEMPT, "cloudProducerFactory");
         Map<String, Object> props = new HashMap<>();
+        props.put("group.id", "newer");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("auto.offset.reset", "earliest");
+        props.put("session.timeout.ms", "30000");
+        props.put("security.protocol", "SASL_SSL");
+        props.put("sasl.mechanism", "SCRAM-SHA-256");
+        props.put("sasl.jaas.config", jaasConfig);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return props;
+        return new DefaultKafkaProducerFactory<>(props);
     }
+
     @Bean
-    public ProducerFactory<String, Order> orderProducerFactory(){
-        return new DefaultKafkaProducerFactory<>(orderConfig());
+    @ConditionalOnProperty(name = "cloudkarafka.enabled", havingValue = "false")
+    public ProducerFactory<String, Order> devProducerFactory(){
+        logger.info(LOG, ATTEMPT, "devProducerFactory");
+        Map<String, Object> props = new HashMap<>();
+        props.put("group.id", "newer");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("auto.offset.reset", "earliest");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(props);
     }
 
     @Bean

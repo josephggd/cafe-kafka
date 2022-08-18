@@ -4,12 +4,14 @@ import com.jsjavaprojects.kafkapractice.dto.Order;
 import com.jsjavaprojects.kafkapractice.utils.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.LOG;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.STD_WAIT_TIME;
 import static com.jsjavaprojects.kafkapractice.utils.LoggingState.ATTEMPT;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.PREPARED;
 import static com.jsjavaprojects.kafkapractice.utils.OrderState.RECEIVED;
@@ -17,6 +19,8 @@ import static com.jsjavaprojects.kafkapractice.utils.OrderState.RECEIVED;
 @Service
 public class CreationService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Value("${spring.kafka.template.default-topic}")
+    private String defaultTopic;
 
     private final KafkaTemplate<String, Order> template;
 
@@ -34,11 +38,11 @@ public class CreationService {
         order.setMenuItem(menuItem);
         order.setCurrentState(RECEIVED);
         order.setLastUpdated();
-        template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
+        template.send(defaultTopic, order.getOrderId().toString(), order);
         Thread.sleep(STD_WAIT_TIME);
         order.setCurrentState(PREPARED);
         order.setLastUpdated();
-        template.send(ORDER_TOPIC, order.getOrderId().toString(), order);
+        template.send(defaultTopic, order.getOrderId().toString(), order);
         return idNumber;
     }
 }

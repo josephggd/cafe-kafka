@@ -11,19 +11,21 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
-import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.*;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_HISTORY_STORE;
+import static com.jsjavaprojects.kafkapractice.utils.CommonStrings.ORDER_HISTORY_TOPIC;
 
 public class OrderTopology {
     private OrderTopology (){}
 
-    public static Topology buildTopology() {
+    public static Topology buildTopology(String topic) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         JsonSerde<Order> orderJsonSerde = new JsonSerde<>(Order.class);
         JsonSerde<OrderHistory> orderHistoryJsonSerde = new JsonSerde<>(OrderHistory.class);
         KStream<String, OrderHistory> stringOrderHistoryKStream = streamsBuilder.stream(
-                        ORDER_TOPIC,
+                        topic,
                         Consumed.with(Serdes.String(), orderJsonSerde))
                 .groupByKey()
                 .aggregate(OrderHistory::new,
