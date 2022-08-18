@@ -39,12 +39,6 @@ public class Producer {
         logger.info(LOG, ATTEMPT, "cloudProducerFactory");
         Map<String, Object> props = new HashMap<>();
         props.put("group.id", groupId);
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-        props.put("auto.offset.reset", "earliest");
-        props.put("session.timeout.ms", "30000");
-        props.put("security.protocol", "SASL_SSL");
-        props.put("sasl.mechanism", "SCRAM-SHA-256");
         props.put("sasl.jaas.config", jaasConfig);
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -58,22 +52,11 @@ public class Producer {
         logger.info(LOG, ATTEMPT, "devProducerFactory");
         Map<String, Object> props = new HashMap<>();
         props.put("group.id", groupId);
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-        props.put("auto.offset.reset", "earliest");
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(props);
     }
-
-//    @Bean
-//    public KafkaTemplate<String, Order> orderTemplate(
-//            ProducerFactory<String, Order> factory
-//    ){
-//        return new KafkaTemplate<>(factory);
-//    }
-
     @Bean
     public KafkaTemplate<String, Order> kafkaTemplate(ProducerFactory<String, Order> kafkaProducerFactory) {
         KafkaTemplate<String, Order> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory);

@@ -22,10 +22,12 @@ public class Streams {
     private String hostInfo;
     @Value("${spring.kafka.template.default-topic}")
     private String defaultTopic;
+    @Value("${spring.kafka.streams.application-id}")
+    private String applicationId;
     @Bean
     public Properties kafkaStreamsConfiguration(){
         Properties properties = new Properties();
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "cafe-kafka");
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
