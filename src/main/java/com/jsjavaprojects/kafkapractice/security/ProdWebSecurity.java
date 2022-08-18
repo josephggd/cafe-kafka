@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @ConditionalOnProperty(name = "security.enabled", havingValue = "true")
 public class ProdWebSecurity {
+    // todo: supports HTTPS?
 
     @Bean
     public SecurityFilterChain filterChain( HttpSecurity httpSecurity ) throws Exception {
@@ -22,7 +23,7 @@ public class ProdWebSecurity {
         httpSecurity.formLogin().disable();
         httpSecurity.httpBasic().disable();
         httpSecurity
-                .cors()
+                .cors() // todo: CORS Access-Control-Allow-Origin
                 .and()
                 .csrf()
                 .disable()
