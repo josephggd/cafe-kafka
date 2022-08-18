@@ -24,11 +24,13 @@ public class Streams {
     private String defaultTopic;
     @Value("${spring.kafka.streams.application-id}")
     private String applicationId;
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String servers;
     @Bean
     public Properties kafkaStreamsConfiguration(){
         Properties properties = new Properties();
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, applicationId);
-        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
