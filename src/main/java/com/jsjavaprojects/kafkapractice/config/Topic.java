@@ -16,11 +16,13 @@ public class Topic {
     @Bean
     public NewTopic buildOrderTopic() {
         return TopicBuilder.name(defaultTopic)
+                .replicas(2)
                 .build();
     }
     @Bean
     public NewTopic buildOrderHistoryTopic() {
         return TopicBuilder.name(ORDER_HISTORY_TOPIC)
+                .replicas(2)
                 .build();
     }
 }
